@@ -1,0 +1,811 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+<title>Euroka Energy – Powering Australia's Transition</title>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Syne:wght@400;600;700;800&display=swap" rel="stylesheet"/>
+<style>
+*{margin:0;padding:0;box-sizing:border-box}
+:root{
+  --lime:#8BC541;
+  --lime-bright:#A0D94E;
+  --lime-dim:#6A9930;
+  --lime-glow:rgba(139,197,65,0.45);
+  --lime-glow2:rgba(139,197,65,0.18);
+  --bg:#F5F7F2;
+  --bg2:#EEF2E8;
+  --bg3:#E6EDE0;
+  --surface:#FFFFFF;
+  --surface2:rgba(255,255,255,0.75);
+  --dark:#1A2210;
+  --dark2:#2A3820;
+  --text:#1A2210;
+  --muted:#5A7045;
+  --muted2:#8AA070;
+  --border:rgba(139,197,65,0.22);
+  --border2:rgba(139,197,65,0.12);
+  --glass-bg:rgba(255,255,255,0.62);
+  --glass-dark:rgba(255,255,255,0.45);
+}
+html{scroll-behavior:smooth}
+body{
+  background:var(--bg);
+  color:var(--text);
+  font-family:'Inter',sans-serif;
+  font-weight:300;
+  line-height:1.65;
+  overflow-x:hidden;
+  cursor:none;
+}
+
+/* ─── CURSOR ─── */
+#cursor{
+  position:fixed;width:11px;height:11px;
+  background:var(--lime);border-radius:50%;
+  pointer-events:none;z-index:9999;
+  transform:translate(-50%,-50%);
+  transition:width .18s,height .18s,background .18s,border .18s;
+}
+#cursor-ring{
+  position:fixed;width:38px;height:38px;
+  border:1.5px solid rgba(139,197,65,.6);
+  border-radius:50%;pointer-events:none;z-index:9998;
+  transform:translate(-50%,-50%);
+  transition:transform .15s ease,width .22s,height .22s,border-color .2s;
+}
+#mouse-glow{
+  position:fixed;width:360px;height:360px;border-radius:50%;
+  pointer-events:none;z-index:0;
+  background:radial-gradient(circle,rgba(139,197,65,.08) 0%,transparent 70%);
+  transform:translate(-50%,-50%);
+  transition:transform .06s linear;
+}
+
+/* ─── NAV ─── */
+nav{
+  position:fixed;top:0;left:0;right:0;z-index:500;
+  display:flex;align-items:center;justify-content:space-between;
+  padding:0 3.5rem;height:68px;
+  background:rgba(245,247,242,.55);
+  backdrop-filter:blur(22px) saturate(1.8);
+  -webkit-backdrop-filter:blur(22px) saturate(1.8);
+  border-bottom:1px solid rgba(139,197,65,.15);
+  transition:background .3s,box-shadow .3s;
+}
+nav.scrolled{
+  background:rgba(245,247,242,.82);
+  box-shadow:0 2px 28px rgba(139,197,65,.08);
+}
+.nav-logo{display:flex;align-items:center;text-decoration:none}
+.nav-logo img{height:42px;object-fit:contain;mix-blend-mode:multiply}
+.nav-links{display:flex;align-items:center;gap:2rem;list-style:none}
+.nav-links a{
+  font-size:.79rem;letter-spacing:.06em;
+  color:var(--muted);text-decoration:none;transition:color .2s;position:relative;
+}
+.nav-links a::after{
+  content:'';position:absolute;bottom:-3px;left:0;
+  width:0;height:1.5px;background:var(--lime);transition:width .25s;
+}
+.nav-links a:hover{color:var(--dark)}
+.nav-links a:hover::after{width:100%}
+.nav-cta{
+  background:var(--lime);color:var(--dark);
+  border:none;padding:.52rem 1.45rem;border-radius:7px;
+  font-size:.78rem;font-weight:600;letter-spacing:.05em;cursor:pointer;
+  transition:all .25s;box-shadow:0 0 18px rgba(139,197,65,.35);
+  text-decoration:none;
+}
+.nav-cta:hover{background:var(--lime-bright);box-shadow:0 0 32px rgba(139,197,65,.55);transform:translateY(-1px)}
+
+/* ─── HERO ─── */
+.hero{
+  min-height:100vh;position:relative;overflow:hidden;
+  display:flex;align-items:center;padding:0 3.5rem;padding-top:68px;
+  background:linear-gradient(140deg,#EFF4E8 0%,#F5F7F2 45%,#EBF3E0 100%);
+}
+.hero-grid{
+  position:absolute;inset:0;
+  background-image:
+    linear-gradient(rgba(139,197,65,.06) 1px,transparent 1px),
+    linear-gradient(90deg,rgba(139,197,65,.06) 1px,transparent 1px);
+  background-size:56px 56px;
+  mask-image:radial-gradient(ellipse 85% 85% at 65% 50%,black 30%,transparent 100%);
+}
+.hero-orb1{
+  position:absolute;right:6%;top:12%;
+  width:540px;height:540px;border-radius:50%;
+  background:radial-gradient(circle,rgba(139,197,65,.18) 0%,rgba(139,197,65,.06) 50%,transparent 70%);
+  animation:pulse 6s ease-in-out infinite;
+}
+.hero-orb2{
+  position:absolute;right:16%;top:22%;
+  width:300px;height:300px;border-radius:50%;
+  border:1px solid rgba(139,197,65,.2);
+  animation:spin-slow 22s linear infinite;
+}
+.hero-orb2::before{
+  content:'';position:absolute;top:50%;left:-4px;
+  width:8px;height:8px;border-radius:50%;background:var(--lime);
+  transform:translateY(-50%);
+  box-shadow:0 0 12px var(--lime),0 0 28px rgba(139,197,65,.5);
+}
+.hero-orb3{
+  position:absolute;right:11%;top:16%;
+  width:420px;height:420px;border-radius:50%;
+  border:1px solid rgba(139,197,65,.1);
+  animation:spin-slow 32s linear infinite reverse;
+}
+.hero-orb3::before{
+  content:'';position:absolute;bottom:0;left:50%;
+  width:6px;height:6px;border-radius:50%;background:rgba(139,197,65,.6);
+  transform:translateX(-50%);
+  box-shadow:0 0 10px rgba(139,197,65,.5);
+}
+@keyframes pulse{0%,100%{transform:scale(1);opacity:.7}50%{transform:scale(1.07);opacity:1}}
+@keyframes spin-slow{from{transform:rotate(0)}to{transform:rotate(360deg)}}
+
+.hero-content{position:relative;z-index:2;max-width:620px}
+.hero-badge{
+  display:inline-flex;align-items:center;gap:.55rem;
+  background:rgba(139,197,65,.12);border:1px solid rgba(139,197,65,.3);
+  border-radius:50px;padding:.38rem 1rem;margin-bottom:1.85rem;
+  font-size:.72rem;letter-spacing:.1em;color:var(--lime-dim);font-weight:600;
+}
+.hero-badge-dot{
+  width:7px;height:7px;border-radius:50%;background:var(--lime);
+  animation:blink 1.6s ease-in-out infinite;
+  box-shadow:0 0 8px var(--lime);
+}
+@keyframes blink{0%,100%{opacity:1}50%{opacity:.25}}
+h1{
+  font-family:'Syne',sans-serif;font-size:3.9rem;font-weight:800;
+  line-height:1.05;letter-spacing:-.025em;margin-bottom:1.45rem;color:var(--dark);
+}
+h1 .lime{
+  color:transparent;
+  background:linear-gradient(125deg,var(--lime) 0%,var(--lime-bright) 100%);
+  -webkit-background-clip:text;background-clip:text;
+}
+.hero-sub{
+  font-size:.98rem;color:var(--muted);max-width:500px;
+  line-height:1.82;margin-bottom:2.5rem;font-weight:300;
+}
+.hero-btns{display:flex;gap:1rem;flex-wrap:wrap}
+.btn-primary{
+  background:var(--lime);color:var(--dark);
+  border:none;padding:.88rem 2.1rem;border-radius:8px;
+  font-weight:600;font-size:.85rem;letter-spacing:.04em;cursor:pointer;
+  transition:all .25s;box-shadow:0 4px 24px rgba(139,197,65,.38);
+  text-decoration:none;display:inline-block;
+}
+.btn-primary:hover{background:var(--lime-bright);box-shadow:0 6px 38px rgba(139,197,65,.55);transform:translateY(-2px)}
+.btn-outline{
+  background:transparent;color:var(--dark);
+  border:1.5px solid rgba(139,197,65,.4);
+  padding:.88rem 2.1rem;border-radius:8px;
+  font-size:.85rem;letter-spacing:.04em;cursor:pointer;
+  transition:all .25s;text-decoration:none;display:inline-block;
+}
+.btn-outline:hover{background:rgba(139,197,65,.08);border-color:var(--lime);box-shadow:0 4px 20px rgba(139,197,65,.15)}
+.hero-stats{
+  display:flex;gap:2.5rem;margin-top:3.5rem;
+  padding-top:2.5rem;border-top:1px solid rgba(139,197,65,.18);
+}
+.stat-num{
+  font-family:'Syne',sans-serif;font-size:1.9rem;font-weight:800;
+  color:var(--lime-dim);line-height:1;
+}
+.stat-label{font-size:.7rem;color:var(--muted2);letter-spacing:.07em;margin-top:.3rem}
+
+/* ─── SECTION COMMONS ─── */
+section{padding:6rem 3.5rem;position:relative}
+.sec-tag{
+  display:inline-flex;align-items:center;gap:.5rem;
+  font-size:.7rem;letter-spacing:.15em;text-transform:uppercase;
+  color:var(--lime-dim);margin-bottom:1rem;font-weight:600;
+}
+.sec-tag::before{content:'';width:14px;height:1.5px;background:var(--lime)}
+h2{
+  font-family:'Syne',sans-serif;font-size:2.6rem;
+  font-weight:800;line-height:1.12;margin-bottom:1rem;color:var(--dark);
+}
+h2 .lime{
+  color:transparent;
+  background:linear-gradient(125deg,var(--lime-dim),var(--lime-bright));
+  -webkit-background-clip:text;background-clip:text;
+}
+
+/* ─── SERVICES ─── */
+.services-intro{display:flex;justify-content:space-between;align-items:flex-end;margin-bottom:3rem;flex-wrap:wrap;gap:1.25rem}
+.services-intro p{font-size:.88rem;color:var(--muted);max-width:340px;line-height:1.75}
+.services-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:1.5rem}
+
+/* GLASS CARD */
+.glass-card{
+  position:relative;overflow:hidden;
+  background:var(--glass-bg);
+  backdrop-filter:blur(18px);-webkit-backdrop-filter:blur(18px);
+  border:1px solid rgba(139,197,65,.18);
+  border-radius:18px;
+  padding:2rem 1.85rem;
+  transition:all .32s ease;
+  cursor:default;
+}
+.glass-card-shine{
+  position:absolute;inset:0;border-radius:18px;
+  background:radial-gradient(circle at var(--mx,50%) var(--my,50%),rgba(139,197,65,.13) 0%,transparent 55%);
+  opacity:0;transition:opacity .32s;pointer-events:none;
+}
+.glass-card:hover .glass-card-shine{opacity:1}
+.glass-card::after{
+  content:'';position:absolute;inset:0;border-radius:18px;
+  background:linear-gradient(135deg,rgba(139,197,65,.22) 0%,transparent 50%,rgba(139,197,65,.06) 100%);
+  opacity:0;transition:opacity .32s;pointer-events:none;
+}
+.glass-card:hover::after{opacity:1}
+.glass-card:hover{
+  transform:translateY(-6px);
+  border-color:rgba(139,197,65,.42);
+  box-shadow:0 10px 44px rgba(139,197,65,.18),0 0 0 1px rgba(139,197,65,.08);
+  background:rgba(255,255,255,.78);
+}
+.card-icon{
+  width:50px;height:50px;border-radius:13px;
+  background:rgba(139,197,65,.12);border:1px solid rgba(139,197,65,.22);
+  display:flex;align-items:center;justify-content:center;margin-bottom:1.3rem;
+  font-size:1.45rem;transition:background .25s;
+}
+.glass-card:hover .card-icon{background:rgba(139,197,65,.22)}
+.card-title{font-family:'Syne',sans-serif;font-size:1.1rem;font-weight:700;margin-bottom:.6rem;color:var(--dark)}
+.card-desc{font-size:.82rem;color:var(--muted);line-height:1.78}
+.card-link{
+  display:inline-flex;align-items:center;gap:.35rem;
+  font-size:.75rem;letter-spacing:.05em;color:var(--lime-dim);
+  margin-top:1.25rem;text-decoration:none;font-weight:600;
+  transition:gap .2s,color .2s;
+}
+.card-link:hover{gap:.65rem;color:var(--lime)}
+
+/* ─── ABOUT ─── */
+.about-wrap{display:grid;grid-template-columns:1fr 1fr;gap:5rem;align-items:center}
+.about-img-box{position:relative}
+.about-img-frame{
+  height:460px;border-radius:22px;overflow:hidden;
+  position:relative;background:linear-gradient(145deg,var(--bg3),var(--bg2));
+  border:1px solid rgba(139,197,65,.2);
+}
+.about-grid-svg{position:absolute;inset:0;width:100%;height:100%;opacity:.12}
+.about-orb{
+  position:absolute;top:50%;left:50%;transform:translate(-50%,-50%);
+  width:240px;height:240px;border-radius:50%;
+  background:radial-gradient(circle,rgba(139,197,65,.15) 0%,transparent 65%);
+}
+.about-float{
+  position:absolute;bottom:-1.5rem;right:-1.5rem;
+  background:rgba(255,255,255,.88);
+  backdrop-filter:blur(20px);-webkit-backdrop-filter:blur(20px);
+  border:1px solid rgba(139,197,65,.28);border-radius:16px;
+  padding:1.3rem 1.6rem;
+  box-shadow:0 8px 36px rgba(139,197,65,.18);min-width:160px;
+}
+.float-num{font-family:'Syne',sans-serif;font-size:2.2rem;font-weight:800;color:var(--lime-dim);line-height:1}
+.float-lbl{font-size:.68rem;color:var(--muted2);margin-top:.2rem;letter-spacing:.07em}
+.about-tag{
+  position:absolute;top:-1rem;left:2rem;
+  background:rgba(255,255,255,.88);backdrop-filter:blur(14px);
+  border:1px solid rgba(139,197,65,.22);border-radius:9px;
+  padding:.5rem 1rem;font-size:.71rem;color:var(--lime-dim);font-weight:600;
+  display:flex;align-items:center;gap:.4rem;
+}
+.about-tag::before{content:'';width:7px;height:7px;border-radius:50%;background:var(--lime);box-shadow:0 0 8px rgba(139,197,65,.6)}
+.about-points{margin-top:2rem;display:flex;flex-direction:column;gap:1rem}
+.about-point{
+  display:flex;gap:1rem;padding:1.2rem 1.3rem;
+  background:rgba(255,255,255,.6);backdrop-filter:blur(10px);
+  border:1px solid rgba(139,197,65,.15);border-radius:13px;transition:all .25s;
+}
+.about-point:hover{border-color:rgba(139,197,65,.35);background:rgba(255,255,255,.85);transform:translateX(4px)}
+.pt-icon{
+  width:38px;height:38px;border-radius:10px;flex-shrink:0;
+  background:rgba(139,197,65,.12);border:1px solid rgba(139,197,65,.2);
+  display:flex;align-items:center;justify-content:center;font-size:1.05rem;
+}
+.pt-title{font-family:'Syne',sans-serif;font-weight:700;font-size:.9rem;margin-bottom:.2rem;color:var(--dark)}
+.pt-desc{font-size:.78rem;color:var(--muted);line-height:1.65}
+
+/* ─── PROJECTS ─── */
+.projects-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:1.5rem;margin-top:3rem}
+.proj-card{
+  position:relative;overflow:hidden;border-radius:18px;
+  background:var(--glass-bg);backdrop-filter:blur(16px);-webkit-backdrop-filter:blur(16px);
+  border:1px solid rgba(139,197,65,.18);transition:all .32s;cursor:default;
+}
+.proj-card:hover{transform:translateY(-6px);border-color:rgba(139,197,65,.42);box-shadow:0 12px 50px rgba(139,197,65,.2)}
+.proj-thumb{height:196px;position:relative;overflow:hidden;background:var(--bg3)}
+.proj-thumb img{width:100%;height:100%;object-fit:cover;transition:transform .4s}
+.proj-card:hover .proj-thumb img{transform:scale(1.05)}
+.proj-thumb-overlay{position:absolute;inset:0;background:linear-gradient(to bottom,transparent 40%,rgba(245,247,242,.7))}
+.proj-status{
+  position:absolute;top:1rem;left:1rem;
+  background:rgba(255,255,255,.82);backdrop-filter:blur(8px);
+  border:1px solid rgba(139,197,65,.28);border-radius:50px;
+  padding:.28rem .75rem;font-size:.65rem;color:var(--lime-dim);
+  letter-spacing:.09em;display:flex;align-items:center;gap:.35rem;font-weight:600;
+}
+.proj-status::before{content:'';width:5px;height:5px;border-radius:50%;background:var(--lime);box-shadow:0 0 6px rgba(139,197,65,.7)}
+.proj-body{padding:1.5rem}
+.proj-title{font-family:'Syne',sans-serif;font-size:1.2rem;font-weight:700;margin-bottom:.5rem;color:var(--dark)}
+.proj-desc{font-size:.8rem;color:var(--muted);line-height:1.72}
+.proj-link{
+  display:inline-flex;align-items:center;gap:.35rem;
+  font-size:.74rem;color:var(--lime-dim);margin-top:1rem;
+  text-decoration:none;font-weight:600;transition:gap .2s,color .2s;
+}
+.proj-link:hover{gap:.65rem;color:var(--lime)}
+
+/* ─── CTA BAND ─── */
+.cta-band{
+  margin:0 3.5rem 5rem;border-radius:24px;overflow:hidden;
+  position:relative;padding:4.5rem 4rem;
+  background:linear-gradient(140deg,var(--dark) 0%,var(--dark2) 60%,#2E4520 100%);
+  border:1px solid rgba(139,197,65,.22);
+}
+.cta-orb{
+  position:absolute;right:-60px;top:-80px;
+  width:400px;height:400px;border-radius:50%;
+  background:radial-gradient(circle,rgba(139,197,65,.18) 0%,transparent 65%);
+  pointer-events:none;
+}
+.cta-inner{
+  display:flex;justify-content:space-between;align-items:center;
+  gap:3rem;flex-wrap:wrap;position:relative;z-index:1;
+}
+.cta-text h2{font-family:'Syne',sans-serif;font-size:2.5rem;font-weight:800;line-height:1.15;margin-bottom:.75rem;color:#F5F7F2}
+.cta-text p{font-size:.9rem;color:rgba(200,215,190,.75);max-width:460px}
+.cta-btns{display:flex;gap:1rem;flex-shrink:0;flex-wrap:wrap}
+.btn-dark-outline{
+  background:transparent;color:#D8EDBB;
+  border:1.5px solid rgba(139,197,65,.4);
+  padding:.88rem 2rem;border-radius:8px;
+  font-size:.85rem;letter-spacing:.04em;cursor:pointer;
+  transition:all .25s;text-decoration:none;display:inline-block;
+}
+.btn-dark-outline:hover{background:rgba(139,197,65,.1);border-color:var(--lime)}
+
+/* ─── FOOTER ─── */
+footer{
+  background:var(--dark);border-top:1px solid rgba(139,197,65,.15);
+  padding:4rem 3.5rem 2rem;
+}
+.footer-grid{display:grid;grid-template-columns:2fr 1fr 1fr 1fr;gap:3rem;margin-bottom:3rem}
+.footer-logo{margin-bottom:.9rem}
+.footer-logo img{height:38px;object-fit:contain;filter:brightness(1.1)}
+.footer-tag{font-size:.82rem;color:rgba(200,215,180,.65);max-width:240px;line-height:1.8;margin-bottom:1.5rem}
+.footer-contact a,.footer-contact span{display:block;font-size:.79rem;color:rgba(200,215,180,.6);text-decoration:none;margin-bottom:.4rem;transition:color .2s}
+.footer-contact a:hover{color:var(--lime)}
+footer h4{font-family:'Syne',sans-serif;font-size:.82rem;font-weight:700;letter-spacing:.09em;margin-bottom:1.1rem;color:rgba(215,230,195,.9)}
+.footer-ul{list-style:none}
+.footer-ul li{margin-bottom:.55rem}
+.footer-ul a{font-size:.77rem;color:rgba(180,200,160,.55);text-decoration:none;transition:color .2s}
+.footer-ul a:hover{color:var(--lime)}
+.footer-bottom{
+  border-top:1px solid rgba(139,197,65,.1);padding-top:1.5rem;
+  display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:1rem;
+}
+.footer-copy{font-size:.71rem;color:rgba(150,170,130,.4)}
+.footer-socials{display:flex;gap:.65rem}
+.social-btn{
+  width:34px;height:34px;border-radius:8px;
+  border:1px solid rgba(139,197,65,.18);display:flex;align-items:center;justify-content:center;
+  color:rgba(180,200,160,.5);font-size:.63rem;font-weight:700;letter-spacing:.03em;
+  text-decoration:none;transition:all .22s;cursor:pointer;background:rgba(139,197,65,.04);
+}
+.social-btn:hover{border-color:var(--lime);color:var(--lime);box-shadow:0 0 14px rgba(139,197,65,.25);background:rgba(139,197,65,.1)}
+
+/* ─── TOP INFO BAR ─── */
+.topbar{
+  background:var(--dark);padding:.55rem 3.5rem;
+  display:flex;justify-content:space-between;align-items:center;
+  font-size:.72rem;color:rgba(180,210,140,.65);
+}
+.topbar a{color:rgba(180,210,140,.65);text-decoration:none;transition:color .2s}
+.topbar a:hover{color:var(--lime)}
+.topbar-left,.topbar-right{display:flex;gap:1.5rem;align-items:center}
+
+/* ─── PARTICLES ─── */
+.particles-wrap{position:fixed;inset:0;pointer-events:none;z-index:0;overflow:hidden}
+.particle{
+  position:absolute;border-radius:50%;background:var(--lime);
+  animation:float-up linear infinite;opacity:0;
+}
+@keyframes float-up{
+  0%{transform:translateY(0) translateX(0);opacity:0}
+  10%{opacity:.3}
+  90%{opacity:.05}
+  100%{transform:translateY(-100vh) translateX(15px);opacity:0}
+}
+
+/* ─── REVEAL ─── */
+.reveal{opacity:0;transform:translateY(22px);transition:opacity .7s ease,transform .7s ease}
+.reveal.on{opacity:1;transform:none}
+.reveal-delay{transition-delay:.12s}
+.reveal-delay2{transition-delay:.22s}
+</style>
+</head>
+<body>
+
+<!-- CURSOR -->
+<div id="cursor"></div>
+<div id="cursor-ring"></div>
+<div id="mouse-glow"></div>
+
+<!-- PARTICLES -->
+<div class="particles-wrap" id="particles-wrap"></div>
+
+<!-- TOP INFO BAR -->
+<div class="topbar">
+  <div class="topbar-left">
+    <a href="mailto:info@eurokaenergy.au">info@eurokaenergy.au</a>
+    <a href="tel:1800161969">Phone: 1800 161 969</a>
+    <span>SPRINGWOOD QLD 4172</span>
+  </div>
+  <div class="topbar-right">
+    <a href="#">Facebook</a>
+    <a href="#">X</a>
+    <a href="#">YouTube</a>
+    <a href="#">LinkedIn</a>
+  </div>
+</div>
+
+<!-- NAV -->
+<nav id="main-nav">
+  <a class="nav-logo" href="#">
+    <img src="data:image/jpeg;base64,/9j/4AAQSkZJRgABAQAAAQABAAD/4gHYSUNDX1BST0ZJTEUAAQEAAAHIAAAAAAQwAABtbnRyUkdCIFhZWiAH4AABAAEAAAAAAABhY3NwAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAQAA9tYAAQAAAADTLQAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAlkZXNjAAAA8AAAACRyWFlaAAABFAAAABRnWFlaAAABKAAAABRiWFlaAAABPAAAABR3dHB0AAABUAAAABRyVFJDAAABZAAAAChnVFJDAAABZAAAAChiVFJDAAABZAAAAChjcHJ0AAABjAAAADxtbHVjAAAAAAAAAAEAAAAMZW5VUwAAAAgAAAAcAHMAUgBHAEJYWVogAAAAAAAAb6IAADj1AAADkFhZWiAAAAAAAABimQAAt4UAABjaWFlaIAAAAAAAACSgAAAPhAAAts9YWVogAAAAAAAA9tYAAQAAAADTLXBhcmEAAAAAAAQAAAACZmYAAPKnAAANWQAAE9AAAApbAAAAAAAAAABtbHVjAAAAAAAAAAEAAAAMZW5VUwAAACAAAAAcAEcAbwBvAGcAbABlACAASQBuAGMALgAgADIAMAAxADb/2wBDAAUDBAQEAwUEBAQFBQUGBwwIBwcHBw8LCwkMEQ8SEhEPERETFhwXExQaFRERGCEYGh0dHx8fExciJCIeJBweHx7/2wBDAQUFBQcGBw4ICA4eFBEUHh4eHh4eHh4eHh4eHh4eHh4eHh4eHh4eHh4eHh4eHh4eHh4eHh4eHh4eHh4eHh4eHh7/wAARCAERA7gDASIAAhEBAxEB/8QAHQABAAIDAQEBAQAAAAAAAAAAAAEGAgQFAwcICf/EAFUQAAIBAgIEBg0IBwYFAwQDAAABAgMEBREGEiExQVFhcZHRBxMUFSIyNVRzgaGxsiMzQlJyk6LBNIKSwtLh8AgWQ1Ni0xclVmPiJKPxGDZGZHSElP/EABsBAQACAwEBAAAAAAAAAAAAAAABAgMEBQYH/8QAPBEBAAIBAgIGBwcCBAcAAAAAAAECAwQRBTEGEiFBUdETImFxkaGxFDKBksHh8DNTFSNCVENSYnKCwvH/2gAMAwEAAhEDEQA/APxkAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAACVvLhPBMNUpJW2WT+vLrApwLj3lw3zb8cusd5cN83/HLrApwLj3lw3zf8cusPBcN82/HLrApwLj3lw3zb8cusruO29G2xKpSoR1YJRyWeeXgp/mBoAAADtaN2Ntd07iVxS13BwUdrWWetnu5kdfvLhvm/wCOXWBTgXHvLhvm345dZHeXDfNvxy6wKcCxY7htnbYfOrRo6k1JJPWb4SugAAAAAAAlbwIBcpYLhqk13Puf15dZHeXDfN/xvrApwLj3lw3zb8cusruO29G2xKpSoR1YJRyWeeXgp/mBoAAADtaN2Ntd07iVxS13BwUdrWWetnu5kdfvLhvm/wCOXWBTgXHvLhvm345dY7y4b5v+OXWBTgXHvLhvm/45dY7y4b5t+OXWBTgXHvLhvm/45dY7y4bn+jfjl1gU4FweC4d5v+OXWYywLD3uhVh9ma/NMCogslbRyk1J0bmUXlsU457eddRzL3Br21Tm6aqQW3WpvWy5+FetAc4EtNPJkAAAAAAAA97S0uLqpqUKUpPh4l6+ADwBYrXR2KydzWbfDGmvzfUdK3wuxoqOrbQk1wzzl7Hs9gFN1ZZtZbuMakuIv1KEKS1aUY01xQWS9h6a8/rz6WB891JcRDi1vR9Cc5fXl0mM0qiyqJTXFJZr2gfP2mnk1kQXevhtjV8e1pLZl4C1PhyOZd6O0pZytqsoP6s9q6V1MCtg2r2wurOWValJJ7pLan6zVAAAAAAANzB6NO4xKjRqx1oSbzWeXAyyLBcNy22+37b6wKeC495cN83/ABy6yVguG5/o345dYFNB6XUYwuasIrKMZtJcmZ5gAAAAAAHewPBlWpOveQerJfJxzybXG/yOn3lw3zf8b6wKcC495cN83/HLrHeXDPN3+2+sCnA3cXdmrpwsYJU47HJSb1n6+A0gAAAAAAAb+BWcby+UKibpRTlNJ5Zr/wCWgNAFw7y4d/kP9t9Y7y4b5v8AjfWBTwXHvLhvm345dZHeXDfN/wAcusCng3sbs1Z38qcE1TklKGb4H/NPoNEAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAJW9H0Kfjy52fPVvR9Cn85L7TAgEEhAGAEnvIJyAEAkAQSMhwgc7SLyLcfq/EinFy0iT7y3G/dH40U0AWzRLyVL08vhiVMtmifkmXp5fDEDrPeAAOZpP5Iqfaj7yoFu0n8kT+3H3lRAAAAAABK3oglbwPoUvGfOQHvY4QBUdJ/LFXmj8ES3FR0n8sVeaPwRA5YAAseh/wAxd/ap+6Z3zg6HfM3f2qf753QJAHCABOrLifQNWXE+gCCDLVlxPoGrL6r6AIAaa3pojNZgSAQBycaweFzGVW2ioV882tyn1PlKtOEoTcJxcZJ5NNbUz6AV3SqyUXG9px8Z6tTn4H+XqXGBXwAAAO3o5hvbp91V4KVJeKn9J9S/rhAYPgsq0YXFy3Gm9qit8upf1ylkpU4Uqap04RhBboxWSRlwhASQSABBp3OJ2NDNTuINrgj4Xu/M1HpBY/Ur/sx6wOuSchaQ2L+hXX6q6zbtsSsbhqNK5hrcUvBz5s94G4CGAE4xnBwnFSi96ks0yuY1gminXs4+AvGp72uVcaLIAPnr2A7ukmGKk5XlFZQb8OP1W+Fcn9cOzhAAAB0NHvLFDnfuZcUU3R/wAr0Od+5lyABb0SQt4FEvf0yv6SXvPEAAAB2dH8LdxNXNxD5FeKmvHfV/8acZ4YJhs72trzTjQg/CfC+Rf1s6C3QjGEFCEVGMVlFLgQErcAgAzK5pFijnKVnbvKK2VJLh5Fyf1z++kGKujna20vlH484/FXEuX3e6tAAAAAAAAAC1aLW/arGVaWalVls5lmvfn0IrNvTlVrwpQWcpSSS5WXqjThRowowecYRUVy5AZgB7FmAAAHF0stte1hcqPhUpZSeX0X/P3lYL7d0Y3NvUoSayqR1dvBxP1PaUSrCVOpKnNZSi2muJgYgAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAACVvR9Cn85LnZ89W9H0Kfjy52BiBwgCq6RXNzDFq1OFerGEVHKKk0vFTOd3Xdec1vvGbeknlqvzQ+FHOA9+67rzmt94x3Xd+c1vvGeAA9+67rzmt94yO67rzmt+2zxAHrO4uJxcZ16sovenNtM8gABbNE/JUvTS+GJUy2aJ+Speml8MQOsAAOXpP5In9qPvKiW/SfyRP7cfeVAAAAAAAEreQSt4H0GXjPnAl48ucgCSo6T+V6v6vwRLcVHSfyvV/V+CIHLAAFk0O+YuvtU/3zunC0P8AmLr7VP8AfO6BJp43KUMKuJRbTyis+eUV7mbho495IuP1PjiBTNZ8nQNZ8nQQAMtZ8nQhrPk6EYgG70hWqwecJuD447H7DctcYvqElnWdWPDGp4Wfr3+054Au+G31K+odsp7GtkovembRUNHKzpYpTW3Kp4D9e725FvW4CTWxKj2+xr0sm3KD1UuNbV7UjYJjlms9qzA+fPfsIPS4g6depTe+EnF+rYeYHtZ0J3N1ToQy1pvLbuXLzcJeKFOFGjClTTUILKOe/wBfKV7RK31q9W4a8Rased8PQn0ll4AIAInKMYynJpRim23uSA8ry5o2lB1a0sorYlwt8SKniWK3V5Jpy7XS4IRexrl4zDFb6pe3MpttU1shHiXWaYAAAAAB0cNxe5s2oturS+pJ7uZ8BarO4pXVBVqMtaL6U+JlEN3B76dldqecnSlsnFcK6wLoSRFqUVKLUotZprc1xgBOMZwlCa1oyWTT4UUfEraVpe1KDzyT8FvhXAy8nC0tt9ajSuUtsZaj5ntXufSBWgAB0NHvLFDnfuZcUU3R/wAr0Od+5lyABb0SQt4FEvf0yv6SXvPE9r39Mr+kl7zxAG5hdhVvrhQh4MFtnNrPJHnY2la8rxo0Us3vb3JcbLlh9pTsraNGnty8aTW2T4wM7elToUY0qUdWEVkkenCOMADlY7ikbOm6NFqVeS/YXG+XiX9P2xjEoWFLJZSrSXgR/N8hT6k5VJynNuUpPNt8IESbk2282yAAAAAAAAAAOxovbdtvnXlHONJZrPdrPYvzfqLSjnaO23c+Gwk0lOq9d7ODg9m31nRAHH0qrunYRopvOrP2La/a0dgqWk1x27EpQi040lqLn3v2vL1AdzR257ow2GtLOdNuEtu3jXseXqOiVjROvqXk6DzyqxzXOtvu1izgCp6TW/acRdRLKNZay59z6/WWw5Wk9t27D3VXjUXrep7H+T9QFTAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAErej6FU+clzs+erej6FV+cl9pgYgkgCn6SeWq/ND4Ec46WkalLGq7jFvxdy/0o5+pP6kugDEGWpP6sugak/qS6AMQZak/qS6BqT+pLoAxBlqT+rLoCp1H9CXQBiCZRlF5STT4miABbNFPJcvTP4YlTLZop5Kl6Z/DEDrAADmaT+SJ/aj7yoFv0n8kT+3EqAAAAAAAJW9EEregPoMvGfOCGspNcpIAqOk/ler+r8ES3FR0n8r1eaPwRA5YAAsmh/zF19qn++d04Wh/wAxdfap/vndAAkxnKMIOc5KMVtbbySAkk1u77Hzy3+8RPd9j55b/eLrA2Aa3d1l55b/AHkesyp3drUmoU7mjOT3KNRNge5BJAATlGMHOclGKWbbeSRK27ylYrc3tW4nSu6sm4Sy1E/BXMvzA6uMY3HtcqFlJ5vZKrxLk6+jjK69oAAyg8pGJMctZZ7FntA+gzalJyW1N5ojgPK0lr2dCTyzlSg3l9lHqAKhpJHLGK/Lq/Ci4FW0tgliFOaXjUlm+N5v+QHGAAAAAAAAAAHQ0eWeL0Nm5t+xlxW4q2ilPWxJzf0Kbkvh/eLSAAJSzkllwgUjGPKlzl/nT+Jmoet3Ptl1Vq/Xm5dO08gN/R7yxQ537mXJFO0e8sUOd+5lyQEAABmc/F8VhYakFBVKkt8c8slxswxnFadnB0qTU674OCPP1FUq1J1akkpNYWCk+JoC7YNcUsS/TKNZZVqMFnFp5SXr4eVnDL/pTkOcnGUIuLW+MWt62rPLaa2p5HtQxPTi1ouvh7v8ADqeyrJb6i+1y++k6+F4tHE5K2oRbqPOVPOzfJx8fP+gKWA8Lm1o3VvKhWhqtNbJJ7pJ8aPm7R3SnHdBsUeDYJjWIWNGFJ1G6FRJScvCi3t2R8Z8oAn0o4ksaJ4nWo1YVLqNG41Vk2lCO/Vb7tXk9V8p6n0/ohoqv8AqjidGp2bJQVPMrnxRRzJb4p5Pjy3m1g1tX7ZcxuKVPVjRlqzcp55pbHuaW9e0+R6Z4PeYPpJf2F9bXFpXhVcXCrBxkvD4FJLPJ7gKWC493sP829Mfs0usxeMYK95cN849RlQqSpVY1IvKUWmn7R4gDZVKpSrU61Ges4SU1e7J5/XNPH7p3tDCb6VPP8A+dT9iOvSSxVPFqzj9KCj9qa9+f8A1s1tFbZXGJumotqMM5tLpA6GXjIEkrLM5VY5kAAkAAAAAAAAAAAAHXwKzjd4mraq+Spz1fHnkjjHC/tC4La6bYjjVtBxr1Yxp5PKnrS2v1fkBmjslpFRq9tq0rS4lqlUlBuCnDLZnuu3vKxDtJY1i04KVzJLxZy3/ac+U5rJmXdyQB9UYdrxhmuO8PbH9m+FXFK4itr16ia2NdUtvQfS8C0UwTTPCKN5hteTtaThUlbwkpxzk81lKLyeaf2nn/ABj0cwnHO0nqY7a3lvcUKNxNQlTmpKL1I5rLLM7v7PWhWLaQad6X3OG0cYrbWjb1oq2k0pwfaZNvbJrYpZ5cBWqEJt4j0rwqeWGa1f1rnMKpptOcqWXzm9k4cPT1b+Mq1wt4Xv7tXqk6HgUV36DW9CxAADs2AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAABlKv0fQqnzkudnz1b0fQqnzkudgYgkgCn6SeWq/ND4Ec46WkalLGq7jFvxdy/0o5+pP6kugDEGWpP6sugak/qS6AMQZak/qS6BqT+pLoAxBlqT+rLoCp1H9CXQBiCZRlF5STT4miABbNFPJcvTP4YlTLZop5Kl6Z/DEDrAADmaT+SJ/aj7yoFv0n8kT+3EqAAAAAAAJW9EEregPoMvGfOCGspNcpIAqOk/ler+r8ES3FR0n8r1eaPwRA5YAAsmh/zF19qn++d04Wh/wAxdfap/vndAAkxnKMIOc5KMVtbbySAkk1u77Hzy3+8RPd9j55b/eLrA2Aa3d1l55b/AHkesyp3drUmoU7mjOT3KNRNge5BJAATlGMHOclGKWbbeSRK27ylYrc3tW4nSu6sm4Sy1E/BXMvzA6uMY3HtcqFlJ5vZKrxLk6+jjK69oAAyg8pGJMctZZ7FntA+gzalJyW1N5ojgPK0lr2dCTyzlSg3l9lHqAKhpJHLGK/Lq/Ci4FW0tgliFOaXjUlm+N5v+QHGAAAAAAAAAAHQ0eWeL0Nm5t+xlxW4q2ilPWxJzf0Kbkvh/eLSAAJSzkllwgUjGPKlzl/nT+Jmoet3Ptl1Vq/Xm5dO08gN/R7yxQ537mXJFO0e8sUOd+5lyQEAABmc/F8VhYakFBVKkt8c8slxswxnFadnB0qTU674OCPP1FUq1J1akkpNYWCk+JoC7YNcUsS/TKNZZVqMFnFp5SXr4eVnDL/pTkOcnGUIuLW+MWt62rPLaa2p5HtQxPTi1ouvh7v8ADqeyrJb6i+1y++k6+F4tHE5K2oRbqPOVPOzfJx8fP+gKWA8Lm1o3VvKhWhqtNbJJ7pJ8aPm7R3SnHdBsUeDYJjWIWNGFJ1G6FRJScvCi3t2R8Z8oAn0o4ksaJ4nWo1YVLqNG41Vk2lCO/Vb7tXk9V8p6n0/ohoqv8AqjidGp2bJQVPMrnxRRzJb4p5Pjy3m1g1tX7ZcxuKVPVjRlqzcp55pbHuaW9e0+R6Z4PeYPpJf2F9bXFpXhVcXCrBxkvD4FJLPJ7gKWC493sP829Mfs0usxeMYK95cN849RlQqSpVY1IvKUWmn7R4gDZVKpSrU61Oes4SU1e7J5/XNPH7p3tDCb6VPP8A+dT9iOvSSxVPFqzj9KCj9qa9+f8A1s1tFbZXGJumotqMM5tLpA6GXjIEkrLM5VY5kAAkAAAAAAAAAAAAHXwKzjd4mraq+Spz1fHnkjjHC/tC4La6bYjjVtBxr1Yxp5PKnrS2v1fkBmjslpFRq9tq0rS4lqlUlBuCnDLZnuu3vKxDtJY1i04KVzJLxZy3/ac+U5rJmXdyQB9UYdrxhmuO8PbH9m+FXFK4itr16ia2NdUtvQfS8C0UwTTPCKN5hteTtaThUlbwkpxzk81lKLyeaf2nn/ABj0cwnHO0nqY7a3lvcUKNxNQlTmpKL1I5rLLM7v7PWhWLaQad6X3OG0cYrbWjb1oq2k0pwfaZNvbJrYpZ5cBWqEJt4j0rwqeWGa1f1rnMKpptOcqWXzm9k4cPT1b+Mq1wt4Xv7tXqk6HgUV36DW9CxAADs2AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAABlKv0fQqnzkudnz1b0fQqnzkudgYgkgCn6SeWq/ND4Ec46WkalLGq7jFvxdy/0o5+pP6kugDEGWpP6sugak/qS6AMQZak/qS6BqT+pLoAxBlqT+rLoCp1H9CXQBiCZRlF5STT4miABbNFPJcvTP4YlTLZop5Kl6Z/DEDrAADmaT+SJ/aj7yoFv0n8kT+3EqAAAAAAAJW9EEregPoMvGfOCGspNcpIAqOk/ler+r8ES3FR0n8r1eaPwRA5YAAsmh/zF19qn++d04Wh/wAxdfap/vndAAkxnKMIOc5KMVtbbySAkk1u77Hzy3+8RPd9j55b/eLrA2Aa3d1l55b/AHkesyp3drUmoU7mjOT3KNRNge5BJAATlGMHOclGKWbbeSRK27ylYrc3tW4nSu6sm4Sy1E/BXMvzA6uMY3HtcqFlJ5vZKrxLk6+jjK69oAAyg8pGJMctZZ7FntA+gzalJyW1N5ojgPK0lr2dCTyzlSg3l9lHqAKhpJHLGK/Lq/Ci4FW0tgliFOaXjUlm+N5v+QHGAAAAAAAAAAHQ0eWeL0Nm5t+xlxW4q2ilPWxJzf0Kbkvh/eLSAAJSzkllwgUjGPKlzl/nT+Jmoet3Ptl1Vq/Xm5dO08gN/R7yxQ537mXJFO0e8sUOd+5lyQEAABmc/F8VhYakFBVKkt8c8slxswxnFadnB0qTU674OCPP1FUq1J1akkpNYWCk+JoC7YNcUsS/TKNZZVqMFnFp5SXr4eVnDL/pTkOcnGUIuLW+MWt62rPLaa2p5HtQxPTi1ouvh7v8ADqeyrJb6i+1y++k6+F4tHE5K2oRbqPOVPOzfJx8fP+gKWA8Lm1o3VvKhWhqtNbJJ7pJ8aPm7R3SnHdBsUeDYJjWIWNGFJ1G6FRJScvCi3t2R8Z8oAn0o4ksaJ4nWo1YVLqNG41Vk2lCO/Vb7tXk9V8p6n0/ohoqv8AqjidGp2bJQVPMrnxRRzJb4p5Pjy3m1g1tX7ZcxuKVPVjRlqzcp55pbHuaW9e0+R6Z4PeYPpJf2F9bXFpXhVcXCrBxkvD4FJLPJ7gKWC493sP829Mfs0usxeMYK95cN849RlQqSpVY1IvKUWmn7R4gDZVKpSrU61Oes4SU1e7J5/XNPH7p3tDCb6VPP8A+dT9iOvSSxVPFqzj9KCj9qa9+f8A1s1tFbZXGJumotqMM5tLpA6GXjIEkrLM5VY5kAAkAAAAAAAAAAAAHXwKzjd4mraq+Spz1fHnkjjHC/tC4La6bYjjVtBxr1Yxp5PKnrS2v1fkBmjslpFRq9tq0rS4lqlUlBuCnDLZnuu3vKxDtJY1i04KVzJLxZy3/ac+U5rJmXdyQB9UYdrxhmuO8PbH9m+FXFK4itr16ia2NdUtvQfS8C0UwTTPCKN5hteTtaThUlbwkpxzk81lKLyeaf2nn/ABj0cwnHO0nqY7a3lvcUKNxNQlTmpKL1I5rLLM7v7PWhWLaQad6X3OG0cYrbWjb1oq2k0pwfaZNvbJrYpZ5cBWqEJt4j0rwqeWGa1f1rnMKpptOcqWXzm9k4cPT1b+Mq1wt4Xv7tXqk6HgUV36DW9CxAADs2AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAB9/7BnZExvs1YlpDg1KVfArr95Rg3HXpS2Tgnt1kuFcaOr+0f2T8K7RmimKafYlXnTxigoRoJOLg3TjqOUsmn4WW9cWR+VtFNKsb0Oxi3xfAMQqWF5bybi+FOMl9qL3prag+RZfRW9ojXlQlGMXiN2owlkpKMss1yuK9p6nS/T7GNL8fudKtIJ07umk50VSUE9q2ywXEvFfq9RRsTh2+F12m9RrJ5bV8y3kgzx1qMuDfJkiNrThvVWS5F/U+j6Oy7oWrOO/bLt9C+OkAbMoymtV5rvQC9bXl3Byi7uqmtq8OT9poSr1ZyznUm5cbbJAB7W97dWy1YV6ig97i8vXkbNLFcRprwriX2pv3sh23FLbTa4pLyVWS9r9Z0AAAADpaZXPbMJjUStZPanxrdxLp3+w1jZ0q0gx2rX2yUKcXGMXut5b+d5lOAAWzRP9Cl6R/AjULZon5Ll6Z/AjUAAAAAAAAAAAAAAAA6ehV12zFqCatVjQkpZbrpRbWfS1vRn2yvlGnjNJR4zKdX2Jtn2XEbWzulJNqnGLi1KLW9NPc0BRZJxlkwTkyDxrz++kGHKVGnWqU5Rp1aco5pNrdl0P0nJxe2lSu6kqV5CdaLeTqRkml6HvMdJeV/wBZfez6gKLTpubappe0CafzWmvQsifad0dXp5bnkV49efP9pnYpSXaMThFfdqv2HaAFDxKlCGN3EacIwhrZxikl4W3ZsKtp9BrDpxW2k1KS9a2e5m1XNXJ/XHnf9eZk6UOZE5RW+Lz9oFMAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAWw7+lUl8pRqLi1k8ujPanx5mrCUpxitbJNpLa0ld3MaEoNtxeT2PXi9v59BnpU8sMerOrVjUnGOcp1P+8y3bVl95JkVXqPjM8Mau7WXt3gRjKeVSXHkubYZW3Kbfm/1JKLTdTiSS4eMnhNJ5cJCqiPJ8Z19Fdqfm+jz/I41L8mPV5Xfv7PxIlUi5zW5vlN9qm1muMytS3b+ZIlNJLKy+JAAHoAAAAARkuMAAAAAAAA6Ojvlih+t8LLiin6P+WKH6/wx+FgXRZp3lStK4pVcqVS3lGLzS/xKf4SZpvePMllq3kZuPjLXfBntY3SlYWtWMlaVJJtNOCb3PjXsOXQ1GpJWNSpTjFU5yU8tzjNTkpNt72nnl9nKYe9EWrSvLuNS3jQlS1ZUvBinPfkuDPLjPXFqNXJynS7JBZNy2PLPYi0akac4vXcHHJSjJp9K6TStN6mxSzT2cjKQP3NomkstqX5+f5teMDhUoU6cM6k4wjwtySXtPHi8vb7vb+BIApOi0pU6tSM1lJKnLvPjZb5VGp+jkuiKS6lHp4vZ0k1wWDjLXS4JRyySf18LNqnjGIQorKvFPi8KX79J2l2L6UMvgpYfaVuH7jy+i1oU04Yq6TT3TS3csivV6tfhemtyXnJMD6VGrSpRkm5OeuvFT2c/nzlrXmspJZ5pZ/e3kfP6VKFGMp5uMU9i3JLfuzK1orS3buqQHPxqhKjilRT3uOtH7Mu9G9jFarjONPKLlnBcMX/AEqS9/rK5e3Mby4lXklFSzySe5JbCVOoqc5PlT6s8gNrB7d3NzFNZQXhS+wt/u9RYC+6E2bsbStXlFp1paSb+rH+ebLoAfNmuvjejF9V1ZFPbFblyZN5bS1RRLAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAf/Z" alt="Euroka Energy"/>
+  </a>
+  <ul class="nav-links">
+    <li><a href="#">Home</a></li>
+    <li><a href="#">About Us</a></li>
+    <li><a href="#">Services</a></li>
+    <li><a href="#">Projects</a></li>
+    <li><a href="#">Support</a></li>
+    <li><a href="#">Contact Us</a></li>
+  </ul>
+  <a href="#" class="nav-cta">Free Quote</a>
+</nav>
+
+<!-- HERO -->
+<div class="hero">
+  <div class="hero-grid"></div>
+  <div class="hero-orb1"></div>
+  <div class="hero-orb2"></div>
+  <div class="hero-orb3"></div>
+  <div class="hero-content">
+    <div class="hero-badge">
+      <span class="hero-badge-dot"></span>
+      Australia's Clean Energy Transition
+    </div>
+    <h1>Virtual Power,<br><span class="lime">Real Impact</span> —<br>Powering Australia</h1>
+    <p class="hero-sub">Euroka Energy is a forward-thinking electricity retailer and renewable energy developer driving Australia's transition to a cleaner, smarter energy future.</p>
+    <div class="hero-btns">
+      <a href="#" class="btn-primary">Learn More</a>
+      <a href="#" class="btn-outline">Free Quote</a>
+    </div>
+    <div class="hero-stats">
+      <div>
+        <div class="stat-num">120MW</div>
+        <div class="stat-label">Solar Capacity</div>
+      </div>
+      <div>
+        <div class="stat-num">3</div>
+        <div class="stat-label">Active Projects</div>
+      </div>
+      <div>
+        <div class="stat-num">NEM</div>
+        <div class="stat-label">Licensed Retailer</div>
+      </div>
+      <div>
+        <div class="stat-num">QLD·NSW·SA</div>
+        <div class="stat-label">Operating States</div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- SERVICES -->
+<section class="reveal">
+  <div class="services-intro">
+    <div>
+      <div class="sec-tag">What We Offer</div>
+      <h2>Integrated Energy <span class="lime">Solutions</span></h2>
+    </div>
+    <p>From generation to grid — full-chain energy services for commercial, industrial, and grid-scale clients across Australia.</p>
+  </div>
+  <div class="services-grid">
+    <div class="glass-card"><div class="glass-card-shine"></div>
+      <div class="card-icon">⚡</div>
+      <div class="card-title">Electricity Trading</div>
+      <div class="card-desc">Licensed retailer operating across Australia, leveraging market expertise and real-time data to maximize value in the National Electricity Market (NEM).</div>
+      <a href="#" class="card-link">Know More →</a>
+    </div>
+    <div class="glass-card"><div class="glass-card-shine"></div>
+      <div class="card-icon">🔋</div>
+      <div class="card-title">Virtual Power Plant</div>
+      <div class="card-desc">Aggregating distributed energy resources into powerful VPPs, enabling smart energy dispatch, FCAS revenue, and grid support services.</div>
+      <a href="#" class="card-link">Know More →</a>
+    </div>
+    <div class="glass-card"><div class="glass-card-shine"></div>
+      <div class="card-icon">🚗</div>
+      <div class="card-title">EV Charging Solutions</div>
+      <div class="card-desc">EV charging infrastructure tailored for commercial and industrial clients, integrated with on-site solar and battery systems.</div>
+      <a href="#" class="card-link">Know More →</a>
+    </div>
+    <div class="glass-card"><div class="glass-card-shine"></div>
+      <div class="card-icon">☀️</div>
+      <div class="card-title">Solar Development</div>
+      <div class="card-desc">From 5MW to 120MW, our solar projects span site acquisition, permitting, construction, and PPA-backed deployment across QLD, NSW and SA.</div>
+      <a href="#" class="card-link">Know More →</a>
+    </div>
+    <div class="glass-card"><div class="glass-card-shine"></div>
+      <div class="card-icon">🏭</div>
+      <div class="card-title">Energy Storage Solutions</div>
+      <div class="card-desc">Grid-scale and commercial battery storage systems delivering peak demand management, arbitrage, and renewable firming.</div>
+      <a href="#" class="card-link">Know More →</a>
+    </div>
+    <div class="glass-card"><div class="glass-card-shine"></div>
+      <div class="card-icon">🌿</div>
+      <div class="card-title">On-Site Solar Collaboration</div>
+      <div class="card-desc">Tailored solar panel installations developed in partnership with commercial clients for maximum energy independence and cost savings.</div>
+      <a href="#" class="card-link">Know More →</a>
+    </div>
+  </div>
+</section>
+
+<!-- ABOUT -->
+<section style="background:var(--bg2)" class="reveal">
+  <div class="about-wrap">
+    <div class="about-img-box">
+      <div class="about-img-frame">
+        <svg class="about-grid-svg" viewBox="0 0 480 460" fill="none" preserveAspectRatio="xMidYMid slice">
+          <defs>
+            <pattern id="ag" x="0" y="0" width="40" height="40" patternUnits="userSpaceOnUse">
+              <path d="M40 0L0 0 0 40" fill="none" stroke="#8BC541" stroke-width=".5"/>
+            </pattern>
+          </defs>
+          <rect width="480" height="460" fill="url(#ag)"/>
+          <circle cx="240" cy="230" r="110" stroke="#8BC541" stroke-width=".8" fill="none"/>
+          <circle cx="240" cy="230" r="65" stroke="#8BC541" stroke-width=".6" fill="none"/>
+          <circle cx="240" cy="230" r="25" fill="rgba(139,197,65,.12)"/>
+          <line x1="130" y1="230" x2="350" y2="230" stroke="#8BC541" stroke-width=".7"/>
+          <line x1="240" y1="120" x2="240" y2="340" stroke="#8BC541" stroke-width=".7"/>
+        </svg>
+        <div class="about-orb"></div>
+        <div style="position:absolute;inset:0;display:flex;align-items:center;justify-content:center">
+          <img src="https://www.eurokaenergy.au/wp-content/uploads/2025/07/combine2-1024x1024.png" style="width:290px;height:290px;object-fit:contain;opacity:.18;mix-blend-mode:multiply" onerror="this.style.display='none'"/>
+        </div>
+      </div>
+      <div class="about-float">
+        <div class="float-num">15+</div>
+        <div class="float-lbl">Years Combined</div>
+        <div class="float-lbl">Expertise</div>
+      </div>
+      <div class="about-tag">NEM Licensed Retailer</div>
+    </div>
+    <div>
+      <div class="sec-tag">About Us</div>
+      <h2>Delivering Energy<br>You Can <span class="lime">Rely On</span></h2>
+      <p style="font-size:.9rem;color:var(--muted);margin-top:1.25rem;line-height:1.85">At Euroka Energy, great service is more than reliability — it's smart, sustainable solutions tailored to your needs. Whether powering a business, a building, or an entire grid, we help you thrive in a cleaner energy future.</p>
+      <div class="about-points">
+        <div class="about-point">
+          <div class="pt-icon">✦</div>
+          <div>
+            <div class="pt-title">Guaranteed Results</div>
+            <div class="pt-desc">Our energy systems are backed by expert engineering and proven market performance, ensuring dependable returns and long-term value.</div>
+          </div>
+        </div>
+        <div class="about-point">
+          <div class="pt-icon">◈</div>
+          <div>
+            <div class="pt-title">Quality Services</div>
+            <div class="pt-desc">From consultation to installation and energy trading, full-chain solutions designed to meet the highest industry standards.</div>
+          </div>
+        </div>
+      </div>
+      <div style="margin-top:2rem;display:flex;gap:1rem">
+        <a href="#" class="btn-primary">Who We Are</a>
+        <a href="#" class="btn-outline">Our Media</a>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- PROJECTS -->
+<section class="reveal">
+  <div class="sec-tag">Our Portfolio</div>
+  <div style="display:flex;justify-content:space-between;align-items:flex-end;margin-bottom:.5rem;flex-wrap:wrap;gap:1rem">
+    <h2>See Our <span class="lime">Projects</span></h2>
+    <p style="font-size:.82rem;color:var(--muted);max-width:280px">Scalable energy infrastructure — clean, reliable, and future-ready.</p>
+  </div>
+  <div class="projects-grid">
+    <div class="proj-card">
+      <div class="proj-thumb">
+        <img src="https://www.eurokaenergy.au/wp-content/uploads/2025/07/st-george.png" alt="St. George" onerror="this.style.display='none'"/>
+        <div class="proj-thumb-overlay"></div>
+        <div class="proj-status">In Development</div>
+      </div>
+      <div class="proj-body">
+        <div class="proj-title">St. George</div>
+        <div class="proj-desc">Hybrid solar and storage project under final development in southwest Queensland.</div>
+        <a href="#" class="proj-link">Know More →</a>
+      </div>
+    </div>
+    <div class="proj-card">
+      <div class="proj-thumb">
+        <img src="https://www.eurokaenergy.au/wp-content/uploads/2025/07/Miles.png" alt="Miles" onerror="this.style.display='none'"/>
+        <div class="proj-thumb-overlay"></div>
+        <div class="proj-status">Operational</div>
+      </div>
+      <div class="proj-body">
+        <div class="proj-title">Miles</div>
+        <div class="proj-desc">Fully operational grid-connected solar project delivering clean energy to Queensland's electricity network.</div>
+        <a href="#" class="proj-link">Know More →</a>
+      </div>
+    </div>
+    <div class="proj-card">
+      <div class="proj-thumb">
+        <img src="https://www.eurokaenergy.au/wp-content/uploads/2025/07/queenton.png" alt="Queenton" onerror="this.style.display='none'"/>
+        <div class="proj-thumb-overlay"></div>
+        <div class="proj-status">Early Stage</div>
+      </div>
+      <div class="proj-body">
+        <div class="proj-title">Queenton</div>
+        <div class="proj-desc">Major grid-scale energy storage development currently in its early stages.</div>
+        <a href="#" class="proj-link">Know More →</a>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- CTA BAND -->
+<div class="cta-band reveal">
+  <div class="cta-orb"></div>
+  <div class="cta-inner">
+    <div class="cta-text">
+      <h2>Want to Partner<br>or <span class="lime">Invest?</span></h2>
+      <p>Contact us for details on project partnerships, investment opportunities, and tailored energy solutions for your organisation.</p>
+    </div>
+    <div class="cta-btns">
+      <a href="#" class="btn-primary">Contact Us</a>
+      <a href="#" class="btn-dark-outline">Free Quote</a>
+    </div>
+  </div>
+</div>
+
+<!-- FOOTER -->
+<footer>
+  <div class="footer-grid">
+    <div>
+      <div class="footer-logo">
+        <img src="data:image/jpeg;base64,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" alt="Euroka Energy" style="height:36px;object-fit:contain;filter:brightness(1.2) contrast(.9)"/>
+      </div>
+      <p class="footer-tag">Powering Australia's transition to a clean, reliable energy future.</p>
+      <div class="footer-contact">
+        <a href="mailto:info@eurokaenergy.au">info@eurokaenergy.au</a>
+        <a href="tel:1800161969">1800 161 969</a>
+        <span>Springwood QLD 4127</span>
+      </div>
+    </div>
+    <div>
+      <h4>About Us</h4>
+      <ul class="footer-ul">
+        <li><a href="#">Who We Are</a></li>
+        <li><a href="#">Media</a></li>
+      </ul>
+      <h4 style="margin-top:1.5rem">Services</h4>
+      <ul class="footer-ul">
+        <li><a href="#">Electricity Trading</a></li>
+        <li><a href="#">Virtual Power Plant</a></li>
+        <li><a href="#">EV Charging</a></li>
+        <li><a href="#">Solar Development</a></li>
+        <li><a href="#">Energy Storage</a></li>
+        <li><a href="#">On-Site Solar</a></li>
+      </ul>
+    </div>
+    <div>
+      <h4>Projects</h4>
+      <ul class="footer-ul">
+        <li><a href="#">St. George</a></li>
+        <li><a href="#">Sandy Hollow</a></li>
+        <li><a href="#">Queenton</a></li>
+      </ul>
+    </div>
+    <div>
+      <h4>Support</h4>
+      <ul class="footer-ul">
+        <li><a href="#">Hardship Policy</a></li>
+        <li><a href="#">Family & DV Policy</a></li>
+        <li><a href="#">Complaints Policy</a></li>
+        <li><a href="#">Privacy Policy</a></li>
+      </ul>
+      <h4 style="margin-top:1.5rem">Contact</h4>
+      <ul class="footer-ul">
+        <li><a href="#">Message Us</a></li>
+      </ul>
+    </div>
+  </div>
+  <div class="footer-bottom">
+    <span class="footer-copy">© 2025 Euroka Energy Pty Ltd. All rights reserved.</span>
+    <div class="footer-socials">
+      <a class="social-btn" href="#">fb</a>
+      <a class="social-btn" href="#">in</a>
+      <a class="social-btn" href="#">X</a>
+      <a class="social-btn" href="#">yt</a>
+    </div>
+  </div>
+</footer>
+
+<script>
+// CURSOR
+const cur=document.getElementById('cursor');
+const ring=document.getElementById('cursor-ring');
+const glow=document.getElementById('mouse-glow');
+let mx=0,my=0,rx=0,ry=0;
+document.addEventListener('mousemove',e=>{
+  mx=e.clientX;my=e.clientY;
+  cur.style.left=mx+'px';cur.style.top=my+'px';
+  glow.style.left=mx+'px';glow.style.top=my+'px';
+});
+(function animRing(){
+  rx+=(mx-rx)*.1;ry+=(my-ry)*.1;
+  ring.style.left=rx+'px';ring.style.top=ry+'px';
+  requestAnimationFrame(animRing);
+})();
+document.querySelectorAll('a,button,.glass-card,.proj-card,.about-point').forEach(el=>{
+  el.addEventListener('mouseenter',()=>{
+    cur.style.width='20px';cur.style.height='20px';cur.style.background='transparent';
+    cur.style.border='2px solid var(--lime)';
+    ring.style.width='56px';ring.style.height='56px';ring.style.borderColor='rgba(139,197,65,.8)';
+  });
+  el.addEventListener('mouseleave',()=>{
+    cur.style.width='11px';cur.style.height='11px';
+    cur.style.background='var(--lime)';cur.style.border='none';
+    ring.style.width='38px';ring.style.height='38px';ring.style.borderColor='rgba(139,197,65,.6)';
+  });
+});
+
+// PER-CARD GLOW TRACKING
+document.querySelectorAll('.glass-card').forEach(card=>{
+  const shine=card.querySelector('.glass-card-shine');
+  card.addEventListener('mousemove',e=>{
+    const r=card.getBoundingClientRect();
+    const x=((e.clientX-r.left)/r.width*100).toFixed(1);
+    const y=((e.clientY-r.top)/r.height*100).toFixed(1);
+    shine.style.background=`radial-gradient(circle at ${x}% ${y}%, rgba(139,197,65,.18) 0%, transparent 55%)`;
+  });
+});
+
+// NAV SCROLL
+const nav=document.getElementById('main-nav');
+window.addEventListener('scroll',()=>{
+  nav.classList.toggle('scrolled',window.scrollY>40);
+});
+
+// SCROLL REVEAL
+const obs=new IntersectionObserver(entries=>{
+  entries.forEach(e=>{if(e.isIntersecting)e.target.classList.add('on')});
+},{threshold:.07});
+document.querySelectorAll('.reveal').forEach(el=>obs.observe(el));
+
+// PARTICLES
+const wrap=document.getElementById('particles-wrap');
+for(let i=0;i<24;i++){
+  const p=document.createElement('div');
+  p.className='particle';
+  const sz=Math.random()*2+1;
+  p.style.cssText=`left:${Math.random()*100}%;bottom:${-5-Math.random()*10}%;width:${sz}px;height:${sz}px;animation-duration:${9+Math.random()*14}s;animation-delay:${Math.random()*12}s`;
+  wrap.appendChild(p);
+}
+</script>
+</body>
+</html>
